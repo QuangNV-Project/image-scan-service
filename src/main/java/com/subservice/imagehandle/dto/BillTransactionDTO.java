@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * DTO chứa thông tin bill đã parse (structured data)
  */
@@ -17,7 +19,7 @@ public class BillTransactionDTO {
     /**
      * Số tiền giao dịch (VNĐ)
      */
-    private Long amount;
+    private BigDecimal amount;
     
     /**
      * Người nhận
@@ -45,27 +47,7 @@ public class BillTransactionDTO {
     private String transactionCode;
     
     /**
-     * Phí chuyển tiền
-     */
-    private String transferFee;
-    
-    /**
      * Trạng thái giao dịch
      */
     private String status;
-    
-    /**
-     * Toàn bộ raw text từ OCR
-     */
-    private String rawText;
-    
-    /**
-     * Confidence score (0.0 - 1.0)
-     */
-    private Double confidence;
-    
-    /**
-     * Đường dẫn ảnh đã upload (optional - null nếu không lưu)
-     */
-    private String imagePath;
 }

@@ -4,6 +4,7 @@ import com.subservice.imagehandle.dto.BillTransactionDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -56,7 +57,7 @@ public class BillParser {
         String normalizedText = normalizeText(ocrText);
         
         // Extract các thông tin
-        Long amount = extractAmount(normalizedText);
+        BigDecimal amount = extractAmount(normalizedText);
         String accountNumber = extractAccountNumber(normalizedText);
         String recipientName = extractRecipientName(normalizedText);
         String bankName = extractBankName(normalizedText);
@@ -83,10 +84,6 @@ public class BillParser {
             .transactionCode(transactionCode)
             .transferContent(transferContent)
             .status(status)
-            .transferFee("Miễn phí")
-            .rawText(ocrText)
-            .confidence(confidence)
-            .imagePath(imagePath)
             .build();
         
         log.info("Parsed bill: amount={}, recipient={}, account={}, bank={}, code={}", 
@@ -105,7 +102,7 @@ public class BillParser {
     /**
      * Extract số tiền - 5 patterns
      */
-    private Long extractAmount(String text) {
+    private BigDecimal extractAmount(String text) {
         log.debug("Extracting amount from text");
         
         List<Long> candidates = new ArrayList<>();
@@ -179,7 +176,7 @@ public class BillParser {
         }
         
         // Lấy số lớn nhất
-        Long result = candidates.stream().max(Long::compare).orElse(null);
+        BigDecimal result = BigDecimal.valueOf(candidates.stream().max(Long::compare).orElse(null));
         log.info("Extracted amount: {}", result);
         return result;
     }

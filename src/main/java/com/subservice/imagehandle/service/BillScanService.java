@@ -89,7 +89,6 @@ public class BillScanService {
             log.info("Created temp file for OCR: {}", tempFile.getAbsolutePath());
             
             // 3. Thực hiện OCR trực tiếp từ temp file
-            // KHÔNG preprocessing - dùng ảnh gốc cho quality tốt hơn
             OcrResult ocrResult = tesseractOcrService.extractTextWithConfidence(tempFile);
             String rawText = ocrResult.getText();
             double confidence = ocrResult.getConfidence();
@@ -99,11 +98,7 @@ public class BillScanService {
             
             if (rawText == null || rawText.trim().isEmpty()) {
                 log.warn("OCR returned empty text");
-                return BillTransactionDTO.builder()
-                    .rawText("")
-                    .confidence(0.0)
-                    .imagePath(null)
-                    .build();
+                return null;
             }
             
             // 4. Parse structured data từ OCR text
