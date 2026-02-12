@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: image-handle-service
+  
+  # File Upload Configuration
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2MB
+
+# Server Configuration
+server:
+  port: 8092
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# File Storage Configuration
+file:
+  upload:
+    dir: uploads
+
+# OCR Configuration
+ocr:
+  tesseract:
+    # Đường dẫn thư mục chứa tessdata (trained data)
+    # Download từ: https://github.com/tesseract-ocr/tessdata
+    datapath: ./tessdata
+    # Language: vie = Vietnamese, eng = English
+    language: vie+eng
+    # Page Segmentation Mode:
+    # 3 = Fully automatic page segmentation (default)
+    # 6 = Assume a single uniform block of text
+    # 7 = Treat the image as a single text line
+    psm: 6
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.subservice.imagehandle: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/application.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+
+# Management & Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

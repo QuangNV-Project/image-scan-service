@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Bill Scanner Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: quangnv1911/image-scan-service:latest
+    container_name: image-scan-service
+    ports:
+      - "8092:8092"
+    environment:
+      # OCR settings
+      OCR_TESSERACT_DATAPATH: /app/tessdata
+      OCR_TESSERACT_LANGUAGE: vie+eng
+      OCR_TESSERACT_PSM: 6
+      
+      # Server settings
+      SERVER_PORT: 8092
+      
+      # Logging
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_COM_SUBSERVICE: DEBUG
+    volumes:
+      # Mount logs để xem từ host
+      - ./logs:/app/logs
+      
+      # Note: Tessdata đã có sẵn trong image (downloaded from GitHub)
+      # KHÔNG mount tessdata từ host để tránh conflict
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8092/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - bill-scanner-network
+
+networks:
+  bill-scanner-network:
+    driver: bridge
